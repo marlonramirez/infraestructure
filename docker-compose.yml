@@ -1,0 +1,53 @@
+version: "3.9"
+services:
+  auth:
+    container_name: auth-caresoft
+    build:
+      context: ./auth
+    ports:
+      - 8000:80
+    volumes:
+      - keys:/keys
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_DATABASE: caresoft
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      PATH_PRIVATEKEY: /keys/privkey.pem
+      PATH_PUBLICKEY: /keys/pubkey.pem
+      PHP_DISPLAY_ERRORS: 1
+
+  pqrs:
+    container_name: pqrs-caresoft
+    build:
+      context: ./pqrs
+    volumes:
+      - keys:/keys
+    ports:
+      - 8001:80
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_DATABASE: caresoft
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      PATH_PUBLICKEY: /keys/pubkey.pem
+      PHP_DISPLAY_ERRORS: 1
+
+  db:
+    container_name: db-caresoft
+    image: postgres:14.1-alpine
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: caresoft
+
+volumes:
+  keys:
+    name: keys
