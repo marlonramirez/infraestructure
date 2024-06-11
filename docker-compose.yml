@@ -1,7 +1,6 @@
-version: "3.9"
 services:
   auth:
-    container_name: auth-caresoft
+    container_name: srv-auth
     build:
       context: ./auth
     ports:
@@ -10,17 +9,21 @@ services:
       - keys:/keys
     depends_on:
       - db
-    environment:
-      DB_HOST: db
-      DB_DATABASE: caresoft
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      PATH_PRIVATEKEY: /keys/privkey.pem
-      PATH_PUBLICKEY: /keys/pubkey.pem
-      PHP_DISPLAY_ERRORS: 1
+    env_file: scoop.env
+    restart: always
+
+  auth_dbup:
+    container_name: conf-auth
+    build:
+      context: ./auth
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: scoop.env
+    entrypoint: ["php", "app/ice", "dbup"]
 
   pqrs:
-    container_name: pqrs-caresoft
+    container_name: srv-pqrs
     build:
       context: ./pqrs
     volumes:
@@ -29,16 +32,42 @@ services:
       - 8001:80
     depends_on:
       - db
-    environment:
-      DB_HOST: db
-      DB_DATABASE: caresoft
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      PATH_PUBLICKEY: /keys/pubkey.pem
-      PHP_DISPLAY_ERRORS: 1
+    env_file: scoop.env
+    restart: always
+
+  pqrs_dbup:
+    container_name: conf-pqrs
+    build:
+      context: ./pqrs
+    depends_on:
+      - auth_dbup
+    env_file: scoop.env
+    entrypoint: ["php", "app/ice", "dbup"]
+
+  pgaudit:
+    container_name: srv-pgaudit
+    build:
+      context: ./pgaudit-api
+    volumes:
+      - keys:/keys
+    ports:
+      - 8002:80
+    depends_on:
+      - db
+    env_file: scoop.env
+    restart: always
+
+  pgaudit_dbup:
+    container_name: conf-pgaudit
+    build:
+      context: ./pgaudit-api
+    depends_on:
+      - pqrs_dbup
+    env_file: scoop.env
+    entrypoint: ["php", "app/ice", "dbup"]
 
   db:
-    container_name: db-caresoft
+    container_name: srv-db
     image: postgres:14.1-alpine
     volumes:
       - ./data:/var/lib/postgresql/data
@@ -47,6 +76,13 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: caresoft
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "caresoft"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
 
 volumes:
   keys:

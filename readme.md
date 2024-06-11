@@ -1,6 +1,6 @@
 # Configuration
 
-* clone all projects in this folder
+* clone
 
 ```
 git clone git@github.com:sespesoft/auth.git
@@ -10,4 +10,12 @@ git clone git@github.com:sespesoft/auth.git
 git clone git@github.com:sespesoft/pqrs.git
 ```
 
-* execute `docker compose up -d`
+```
+git clone git@github.com:sespesoft/pgaudit-api.git
+```
+
+* execute
+
+```
+docker compose up -d && docker compose rm -f
+```
