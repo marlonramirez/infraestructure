@@ -7,12 +7,12 @@ services:
       - 8000:80
     volumes:
       - keys:/keys
-    depends_on:
-      - db
+    extra_hosts:
+      host.docker.internal: host-gateway
     env_file: scoop.env
     restart: always
 
-  auth_dbup:
+  auth_conf:
     container_name: conf-auth
     build:
       context: ./auth
@@ -20,65 +20,110 @@ services:
       db:
         condition: service_healthy
     env_file: scoop.env
-    entrypoint: ["php", "app/ice", "dbup"]
+    entrypoint: ["app/ice", "dbup"]
+    restart: on-failure
 
   pqrs:
     container_name: srv-pqrs
     build:
       context: ./pqrs
     volumes:
-      - keys:/keys
+      - keys:/keys:ro
     ports:
       - 8001:80
-    depends_on:
-      - db
+    extra_hosts:
+      host.docker.internal: host-gateway
     env_file: scoop.env
     restart: always
 
-  pqrs_dbup:
+  pqrs_conf:
     container_name: conf-pqrs
     build:
       context: ./pqrs
     depends_on:
-      - auth_dbup
+      - auth_conf
     env_file: scoop.env
-    entrypoint: ["php", "app/ice", "dbup"]
+    entrypoint: ["app/ice", "dbup"]
+    restart: on-failure
 
   pgaudit:
     container_name: srv-pgaudit
     build:
       context: ./pgaudit-api
     volumes:
-      - keys:/keys
+      - keys:/keys:ro
     ports:
       - 8002:80
-    depends_on:
-      - db
+    extra_hosts:
+      host.docker.internal: host-gateway
     env_file: scoop.env
     restart: always
 
-  pgaudit_dbup:
+  pgaudit_conf:
     container_name: conf-pgaudit
     build:
       context: ./pgaudit-api
     depends_on:
-      - pqrs_dbup
+      - pqrs_conf
     env_file: scoop.env
-    entrypoint: ["php", "app/ice", "dbup"]
+    entrypoint: ["app/ice", "dbup"]
+    restart: on-failure
+
+  audit:
+    container_name: srv-audit
+    build:
+      context: ./audit
+    volumes:
+      - keys:/keys:ro
+    ports:
+      - 8003:80
+    extra_hosts:
+      host.docker.internal: host-gateway
+    env_file: ./audit/.env.example
+    restart: always
+
+  audit_conf:
+    container_name: conf-audit
+    build:
+      context: ./audit
+    depends_on:
+      - pgaudit_conf
+    env_file: ./audit/.env.example
+    entrypoint: ["database/migrate.sh"]
+  
+  webapp:
+    container_name: srv-webapp
+    build:
+      context: ./webapp
+    ports:
+      - 80:80
+    volumes:
+      - ./config.json:/usr/share/nginx/html/config.json
+    restart: always
+  
+  pgadmin:
+    container_name: srv-pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - 8084:80
+    volumes:
+      - ./storage:/var/lib/pgadmin/storage
+    environment:
+      - PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT=False
+      - PGADMIN_DEFAULT_EMAIL=admin@sespesoft.com
+      - PGADMIN_DEFAULT_PASSWORD=Qazwsx*
 
   db:
     container_name: srv-db
     image: postgres:14.1-alpine
     volumes:
       - ./data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: caresoft
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "caresoft"]
+      test: ["CMD-SHELL", "pg_isready"]
       interval: 30s
       timeout: 60s
       retries: 5
@@ -87,3 +132,6 @@ services:
 volumes:
   keys:
     name: keys
+  netdataconfig:
+  netdatalib:
+  netdatacache:

@@ -4,3 +4,4 @@ data
 auth
 pgaudit-api
 webapp
+storage
