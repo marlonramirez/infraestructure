@@ -1,6 +1,6 @@
 {
-    "url_server": "http://localhost/",
-    "auth": "http://host.docker.internal:8000/",
-    "pqr": "http://host.dockerexternal:8001/",
-    "pgaudit": "http://host.docker.external:8002/"
+    "url_server": "http://audit.localhost/",
+    "auth": "http://auth.localhost/",
+    "pqr": "http://pqrs.localhost/",
+    "pgaudit": "http://pgaudit.localhost/"
 }

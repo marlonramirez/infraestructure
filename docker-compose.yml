@@ -3,14 +3,16 @@ services:
     container_name: srv-auth
     build:
       context: ./auth
-    ports:
-      - 8000:80
     volumes:
       - keys:/keys
-    extra_hosts:
-      host.docker.internal: host-gateway
     env_file: scoop.env
+    environment:
+      - HTTP_X_PROXY_PATH=api/auth/
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=Host(`auth.localhost`)"
+      - "traefik.http.routers.auth.entrypoints=web"
 
   auth_conf:
     container_name: conf-auth
@@ -29,12 +31,12 @@ services:
       context: ./pqrs
     volumes:
       - keys:/keys:ro
-    ports:
-      - 8001:80
-    extra_hosts:
-      host.docker.internal: host-gateway
     env_file: scoop.env
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pqr.rule=Host(`pqrs.localhost`)"
+      - "traefik.http.routers.pqr.entrypoints=web"
 
   pqrs_conf:
     container_name: conf-pqrs
@@ -52,12 +54,12 @@ services:
       context: ./pgaudit-api
     volumes:
       - keys:/keys:ro
-    ports:
-      - 8002:80
-    extra_hosts:
-      host.docker.internal: host-gateway
     env_file: scoop.env
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pga.rule=Host(`pgaudit.localhost`)"
+      - "traefik.http.routers.pga.entrypoints=web"
 
   pgaudit_conf:
     container_name: conf-pgaudit
@@ -75,12 +77,12 @@ services:
       context: ./audit
     volumes:
       - keys:/keys:ro
-    ports:
-      - 8003:80
-    extra_hosts:
-      host.docker.internal: host-gateway
     env_file: ./audit/.env.example
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.audit.rule=Host(`audit.localhost`)"
+      - "traefik.http.routers.audit.entrypoints=web"
 
   audit_conf:
     container_name: conf-audit
@@ -95,14 +97,16 @@ services:
     container_name: srv-webapp
     build:
       context: ./webapp
-    ports:
-      - 80:80
     volumes:
       - ./config.json:/usr/share/nginx/html/config.json
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webapp.rule=Host(`localhost`)"
+      - "traefik.http.routers.webapp.entrypoints=web"
   
   pgadmin:
-    container_name: srv-pgadmin
+    container_name: tool-pgadmin
     image: dpage/pgadmin4
     ports:
       - 8084:80
@@ -112,6 +116,20 @@ services:
       - PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT=False
       - PGADMIN_DEFAULT_EMAIL=admin@sespesoft.com
       - PGADMIN_DEFAULT_PASSWORD=Qazwsx*
+
+  traefik:
+    image: "traefik:v3.0"
+    container_name: "tool-traefik"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   db:
     container_name: srv-db
@@ -131,7 +149,3 @@ services:
 
 volumes:
   keys:
-    name: keys
-  netdataconfig:
-  netdatalib:
-  netdatacache:
