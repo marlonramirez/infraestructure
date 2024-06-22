@@ -6,8 +6,6 @@ services:
     volumes:
       - keys:/keys
     env_file: scoop.env
-    environment:
-      - HTTP_X_PROXY_PATH=api/auth/
     restart: always
     labels:
       - "traefik.enable=true"
@@ -22,7 +20,7 @@ services:
       db:
         condition: service_healthy
     env_file: scoop.env
-    entrypoint: ["app/ice", "dbup"]
+    entrypoint: ["app/ice", "dbup", "--schema={perfiles,*}"]
     restart: on-failure
 
   pqrs:
@@ -97,8 +95,8 @@ services:
     container_name: srv-webapp
     build:
       context: ./webapp
-    volumes:
-      - ./config.json:/usr/share/nginx/html/config.json
+      additional_contexts:
+        - assets=./assets
     restart: always
     labels:
       - "traefik.enable=true"
