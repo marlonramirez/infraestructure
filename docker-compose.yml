@@ -4,7 +4,7 @@ services:
     build:
       context: ./auth
     volumes:
-      - keys:/keys
+      - keys:/rsa/pub:ro
     env_file: scoop.env
     restart: always
     labels:
@@ -28,7 +28,7 @@ services:
     build:
       context: ./pqrs
     volumes:
-      - keys:/keys:ro
+      - keys:/rsa/pub:ro
     env_file: scoop.env
     restart: always
     labels:
@@ -51,7 +51,7 @@ services:
     build:
       context: ./pgaudit-api
     volumes:
-      - keys:/keys:ro
+      - keys:/rsa/pub:ro
     env_file: scoop.env
     restart: always
     labels:
