@@ -1,5 +1,5 @@
 {
-    "audit": "http://audit.localhost/",
+    "audit": "http://audit.localhost/api/auth/",
     "auth": "http://auth.localhost/",
     "pqr": "http://pqrs.localhost/",
     "pgaudit": "http://pgaudit.localhost/"
