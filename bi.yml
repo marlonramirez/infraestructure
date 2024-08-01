@@ -1,0 +1,22 @@
+services:
+  jasper:
+    container_name: srv-jasper
+    image: bitnami/jasperreports-archived:8.2.0-debian-11-r98
+    volumes:
+      - ./jasperreports_data:/bitnami/jasperreports
+    depends_on:
+      - db
+    environment:
+      - JASPERREPORTS_DATABASE_TYPE=postgresql
+      - JASPERREPORTS_DATABASE_HOST=db
+      - JASPERREPORTS_DATABASE_PORT_NUMBER=5432
+      - JASPERREPORTS_DATABASE_USER=postgres
+      - JASPERREPORTS_DATABASE_PASSWORD=postgres
+      - JASPERREPORTS_DATABASE_NAME=jasperreports
+      - JASPERREPORTS_PASSWORD=Qazwsx*
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.bi.rule=Host(`bi.localhost`)
+      - traefik.http.routers.bi.entrypoints=web
+      - traefik.http.services.bi.loadbalancer.server.port=8080

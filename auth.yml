@@ -1,0 +1,24 @@
+services:
+  auth:
+    container_name: srv-auth
+    build:
+      context: ./auth
+    volumes:
+      - keys:/rsa/pub:ro
+    env_file: scoop.env
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.auth.rule=Host(`auth.localhost`)
+      - traefik.http.routers.auth.entrypoints=web
+
+  auth_conf:
+    container_name: conf-auth
+    build:
+      context: ./auth
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: scoop.env
+    entrypoint: [php, app/ice, dbup, "--schema={perfiles,[!tests]*}"]
+    restart: on-failure

@@ -1,0 +1,24 @@
+services:
+  pgaudit:
+    container_name: srv-pgaudit
+    build:
+      context: ./pgaudit-api
+    volumes:
+      - keys:/rsa/pub:ro
+    env_file: scoop.env
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.pga.rule=Host(`pgaudit.localhost`)
+      - traefik.http.routers.pga.entrypoints=web
+
+  pgaudit_conf:
+    container_name: conf-pgaudit
+    build:
+      context: ./pgaudit-api
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: scoop.env
+    entrypoint: [php, app/ice, dbup, "--schema=[!tests]*"]
+    restart: on-failure

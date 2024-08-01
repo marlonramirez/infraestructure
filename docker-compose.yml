@@ -1,137 +1,34 @@
+include:
+  - auth.yml
+  - pqrs.yml
+  - pgaudit.yml
+  - audit.yml
+  - webapp.yml
+  - bi.yml
+  - tools.yml
 services:
-  auth:
-    container_name: srv-auth
-    build:
-      context: ./auth
-    volumes:
-      - keys:/rsa/pub:ro
-    env_file: scoop.env
-    restart: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.auth.rule=Host(`auth.localhost`)"
-      - "traefik.http.routers.auth.entrypoints=web"
-
-  auth_conf:
-    container_name: conf-auth
-    build:
-      context: ./auth
-    depends_on:
-      db:
-        condition: service_healthy
-    env_file: scoop.env
-    entrypoint: ["app/ice", "dbup", "--schema={perfiles,*}"]
-    restart: on-failure
-
-  pqrs:
-    container_name: srv-pqrs
-    build:
-      context: ./pqrs
-    volumes:
-      - keys:/rsa/pub:ro
-    env_file: scoop.env
-    restart: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.pqr.rule=Host(`pqrs.localhost`)"
-      - "traefik.http.routers.pqr.entrypoints=web"
-
-  pqrs_conf:
-    container_name: conf-pqrs
-    build:
-      context: ./pqrs
-    depends_on:
-      - auth_conf
-    env_file: scoop.env
-    entrypoint: ["app/ice", "dbup"]
-    restart: on-failure
-
-  pgaudit:
-    container_name: srv-pgaudit
-    build:
-      context: ./pgaudit-api
-    volumes:
-      - keys:/rsa/pub:ro
-    env_file: scoop.env
-    restart: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.pga.rule=Host(`pgaudit.localhost`)"
-      - "traefik.http.routers.pga.entrypoints=web"
-
-  pgaudit_conf:
-    container_name: conf-pgaudit
-    build:
-      context: ./pgaudit-api
-    depends_on:
-      - pqrs_conf
-    env_file: scoop.env
-    entrypoint: ["app/ice", "dbup"]
-    restart: on-failure
-
-  audit:
-    container_name: srv-audit
-    build:
-      context: ./audit
-    volumes:
-      - keys:/keys:ro
-    env_file: ./audit/.env.example
-    restart: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.audit.rule=Host(`audit.localhost`)"
-      - "traefik.http.routers.audit.entrypoints=web"
-    environment:
-      - JWT_SECRET=QoYtsdMSoIMLQ1drwQW4f1Sx5wqkVgmLAwcPDPd2NNdYb1IUe0ayQjo97wZJqtOy
-      - APP_KEY=base64:oriD7ArC+WCHI5dF+x+t8DR6UTmdjC8cv376Yn7XW+k=
-
-  audit_conf:
-    container_name: conf-audit
-    build:
-      context: ./audit
-    depends_on:
-      - pgaudit_conf
-    env_file: ./audit/.env.example
-    entrypoint: ["database/migrate.sh"]
-    restart: on-failure
-  
-  webapp:
-    container_name: srv-webapp
-    build:
-      context: ./webapp
-      additional_contexts:
-        - assets=./assets
-    restart: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.webapp.rule=Host(`localhost`)"
-      - "traefik.http.routers.webapp.entrypoints=web"
-  
-  pgadmin:
-    container_name: tool-pgadmin
-    image: dpage/pgadmin4
+  mq:
+    container_name: srv-mq
+    image: rabbitmq:3.13.6-management-alpine
     ports:
-      - 8084:80
-    volumes:
-      - ./storage:/var/lib/pgadmin/storage
+      - 8072:15672
     environment:
-      - PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT=False
-      - PGADMIN_DEFAULT_EMAIL=admin@sespesoft.com
-      - PGADMIN_DEFAULT_PASSWORD=Qazwsx*
+      - RABBITMQ_DEFAULT_USER=sespesoft
+      - RABBITMQ_DEFAULT_PASS=Qazwsx*
 
   traefik:
-    image: "traefik:v3.0"
-    container_name: "tool-traefik"
+    image: traefik:v3.0
+    container_name: tool-traefik
     command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entryPoints.web.address=:80"
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entryPoints.web.address=:80
     ports:
-      - "80:80"
-      - "8080:8080"
+      - 80:80
+      - 8080:8080
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: always
 
   db:
@@ -144,7 +41,7 @@ services:
       POSTGRES_DB: caresoft
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: [CMD-SHELL, pg_isready]
       interval: 30s
       timeout: 60s
       retries: 5

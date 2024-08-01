@@ -1,0 +1,12 @@
+services:
+  webapp:
+    container_name: srv-webapp
+    build:
+      context: ./webapp
+      additional_contexts:
+        - assets=./assets
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.webapp.rule=Host(`localhost`)
+      - traefik.http.routers.webapp.entrypoints=web 

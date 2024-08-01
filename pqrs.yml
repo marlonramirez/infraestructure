@@ -1,0 +1,24 @@
+services:
+  pqrs:
+    container_name: srv-pqrs
+    build:
+      context: ./pqrs
+    volumes:
+      - keys:/rsa/pub:ro
+    env_file: scoop.env
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.pqr.rule=Host(`pqrs.localhost`)
+      - traefik.http.routers.pqr.entrypoints=web
+
+  pqrs_conf:
+    container_name: conf-pqrs
+    build:
+      context: ./pqrs
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: scoop.env
+    entrypoint: [php, app/ice, dbup, "--schema=[!tests]*"]
+    restart: on-failure

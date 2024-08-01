@@ -1,0 +1,24 @@
+services:
+  audit:
+    container_name: srv-audit
+    build:
+      context: ./audit
+    volumes:
+      - keys:/keys:ro
+    env_file: ./audit/.env.example
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.audit.rule=Host(`audit.localhost`)
+      - traefik.http.routers.audit.entrypoints=web
+
+  audit_conf:
+    container_name: conf-audit
+    build:
+      context: ./audit
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: ./audit/.env.example
+    entrypoint: [bash, database/migrate.sh]
+    restart: on-failure
