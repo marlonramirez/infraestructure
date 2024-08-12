@@ -2,10 +2,10 @@ services:
   audit:
     container_name: srv-audit
     build:
-      context: ./audit
+      context: ../audit
     volumes:
       - keys:/keys:ro
-    env_file: ./audit/.env.example
+    env_file: ../audit/.env.example
     restart: always
     labels:
       - traefik.enable=true
@@ -15,10 +15,10 @@ services:
   audit_conf:
     container_name: conf-audit
     build:
-      context: ./audit
+      context: ../audit
     depends_on:
       db:
         condition: service_healthy
-    env_file: ./audit/.env.example
+    env_file: ../audit/.env.example
     entrypoint: [bash, database/migrate.sh]
     restart: on-failure

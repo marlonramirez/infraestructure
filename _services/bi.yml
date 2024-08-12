@@ -3,9 +3,10 @@ services:
     container_name: srv-jasper
     image: bitnami/jasperreports-archived:8.2.0-debian-11-r98
     volumes:
-      - ./jasperreports_data:/bitnami/jasperreports
+      - jasper_data:/bitnami/jasperreports
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - JASPERREPORTS_DATABASE_TYPE=postgresql
       - JASPERREPORTS_DATABASE_HOST=db

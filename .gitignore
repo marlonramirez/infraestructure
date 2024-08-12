@@ -1,8 +1,6 @@
 audit
 pqrs
-data
 auth
 pgaudit-api
 webapp
-storage
-jasperreports_data
+services/storage

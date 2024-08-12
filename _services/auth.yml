@@ -2,10 +2,10 @@ services:
   auth:
     container_name: srv-auth
     build:
-      context: ./auth
+      context: ../auth
     volumes:
       - keys:/rsa/pub:ro
-    env_file: scoop.env
+    env_file: .env
     restart: always
     labels:
       - traefik.enable=true
@@ -15,10 +15,10 @@ services:
   auth_conf:
     container_name: conf-auth
     build:
-      context: ./auth
+      context: ../auth
     depends_on:
       db:
         condition: service_healthy
-    env_file: scoop.env
+    env_file: .env
     entrypoint: [php, app/ice, dbup, "--schema={perfiles,[!tests]*}"]
     restart: on-failure

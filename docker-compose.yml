@@ -1,11 +1,11 @@
 include:
-  - auth.yml
-  - pqrs.yml
-  - pgaudit.yml
-  - audit.yml
-  - webapp.yml
-  - bi.yml
-  - tools.yml
+  - _services/auth.yml
+  - _services/pqrs.yml
+  - _services/pgaudit.yml
+  - _services/audit.yml
+  - _services/webapp.yml
+  - _services/bi.yml
+  - _services/tools.yml
 services:
   mq:
     container_name: srv-mq
@@ -35,7 +35,7 @@ services:
     container_name: srv-db
     image: postgres:14.1-alpine
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: caresoft
@@ -49,3 +49,5 @@ services:
 
 volumes:
   keys:
+  jasper_data:
+  pg_data:

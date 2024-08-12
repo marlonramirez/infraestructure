@@ -2,10 +2,10 @@ services:
   pqrs:
     container_name: srv-pqrs
     build:
-      context: ./pqrs
+      context: ../pqrs
     volumes:
       - keys:/rsa/pub:ro
-    env_file: scoop.env
+    env_file: .env
     restart: always
     labels:
       - traefik.enable=true
@@ -15,10 +15,10 @@ services:
   pqrs_conf:
     container_name: conf-pqrs
     build:
-      context: ./pqrs
+      context: ../pqrs
     depends_on:
       db:
         condition: service_healthy
-    env_file: scoop.env
+    env_file: .env
     entrypoint: [php, app/ice, dbup, "--schema=[!tests]*"]
     restart: on-failure
