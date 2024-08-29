@@ -4,7 +4,12 @@ services:
     build:
       context: ../pgaudit-api
     volumes:
-      - keys:/rsa/pub:ro
+      - type: volume
+        source: keys
+        volume:
+          subpath: pub
+        target: /rsa/pub
+        read_only: true
     env_file: .env
     restart: always
     labels:

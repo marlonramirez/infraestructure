@@ -4,7 +4,12 @@ services:
     build:
       context: ../audit
     volumes:
-      - keys:/keys:ro
+      - type: volume
+        source: keys
+        volume:
+          subpath: pub
+        target: /keys
+        read_only: true
     env_file: ../audit/.env.example
     restart: always
     labels:
