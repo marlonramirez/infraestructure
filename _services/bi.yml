@@ -1,3 +1,5 @@
+include:
+  - databi.yml
 services:
   jasper:
     container_name: srv-jasper
@@ -5,11 +7,11 @@ services:
     volumes:
       - jasper_data:/bitnami/jasperreports
     depends_on:
-      db:
+      db_bi:
         condition: service_healthy
     environment:
       - JASPERREPORTS_DATABASE_TYPE=postgresql
-      - JASPERREPORTS_DATABASE_HOST=db
+      - JASPERREPORTS_DATABASE_HOST=db_bi
       - JASPERREPORTS_DATABASE_PORT_NUMBER=5432
       - JASPERREPORTS_DATABASE_USER=postgres
       - JASPERREPORTS_DATABASE_PASSWORD=postgres
@@ -21,3 +23,5 @@ services:
       - traefik.http.routers.bi.rule=Host(`bi.localhost`)
       - traefik.http.routers.bi.entrypoints=web
       - traefik.http.services.bi.loadbalancer.server.port=8080
+volumes:
+  jasper_data:

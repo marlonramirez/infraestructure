@@ -1,0 +1,6 @@
+{
+    "audit": "https://audit.care.sespesoft.com/api/auth/",
+    "auth": "https://auth.care.sespesoft.com/",
+    "pqr": "https://pqrs.care.sespesoft.com/",
+    "pgaudit": "https://pgaudit.care.sespesoft.com/"
+}

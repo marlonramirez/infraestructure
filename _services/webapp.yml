@@ -4,7 +4,7 @@ services:
     build:
       context: ../webapp
       additional_contexts:
-        - assets=https://github.com/marlonramirez/caresoft-assets.git
+        - assets=../_assets
     restart: always
     labels:
       - traefik.enable=true

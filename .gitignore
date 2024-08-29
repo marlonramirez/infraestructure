@@ -4,3 +4,4 @@ auth
 pgaudit-api
 webapp
 _services/storage
+_services/.env

@@ -1,4 +1,5 @@
 include:
+  - _services/database.yml
   - _services/auth.yml
   - _services/pqrs.yml
   - _services/pgaudit.yml
@@ -31,23 +32,5 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: always
 
-  db:
-    container_name: srv-db
-    image: postgres:14.1-alpine
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: caresoft
-    restart: always
-    healthcheck:
-      test: [CMD-SHELL, pg_isready]
-      interval: 30s
-      timeout: 60s
-      retries: 5
-      start_period: 80s
-
 volumes:
   keys:
-  jasper_data:
-  pg_data:
