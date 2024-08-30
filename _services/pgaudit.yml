@@ -4,17 +4,12 @@ services:
     build:
       context: ../pgaudit-api
     volumes:
-      - type: volume
-        source: keys
-        volume:
-          subpath: pub
-        target: /rsa/pub
-        read_only: true
+      - pub_key:/rsa/pub:ro
     env_file: .env
     restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.pga.rule=Host(`pgaudit.localhost`)
+      - traefik.http.routers.pga.rule=Host(`pgaudit.${DOMAIN}`)
       - traefik.http.routers.pga.entrypoints=web
 
   pgaudit_conf:

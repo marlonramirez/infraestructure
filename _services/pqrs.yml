@@ -4,17 +4,12 @@ services:
     build:
       context: ../pqrs
     volumes:
-      - type: volume
-        source: keys
-        volume:
-          subpath: pub
-        target: /rsa/pub
-        read_only: true
+      - pub_key:/rsa/pub:ro
     env_file: .env
     restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.pqr.rule=Host(`pqrs.localhost`)
+      - traefik.http.routers.pqr.rule=Host(`pqrs.${DOMAIN}`)
       - traefik.http.routers.pqr.entrypoints=web
 
   pqrs_conf:

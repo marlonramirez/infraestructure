@@ -5,8 +5,9 @@ services:
     volumes:
       - pg_jasper_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: jasperreports
+      POSTGRES_USER: ${BI_DB_USER}
+      POSTGRES_PASSWORD: ${BI_DB_PASSWORD}
+      POSTGRES_DB: ${BI_DB_NAME}
     restart: always
     healthcheck:
       test: [CMD-SHELL, pg_isready]

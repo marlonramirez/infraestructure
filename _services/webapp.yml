@@ -8,5 +8,5 @@ services:
     restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.webapp.rule=Host(`localhost`)
+      - traefik.http.routers.webapp.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.webapp.entrypoints=web 

@@ -22,11 +22,15 @@ git clone git@github.com:sespesoft/webapp.git -b auth
 git clone git@github.com:sespesoft/audit.git -b authentication-service
 ```
 
+rename files `example.dev` to `env`.
+
 * execute
 
 ```
-docker compose up -d && docker compose rm -f
+docker compose up -d
+docker compose rm -f
 ```
+
 # assets
 This repository management assets of sespesoft customers
 

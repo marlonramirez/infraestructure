@@ -4,12 +4,12 @@ services:
     build:
       context: ../auth
     volumes:
-      - keys:/rsa
+      - pub_key:/rsa/pub
     env_file: .env
     restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.auth.rule=Host(`auth.localhost`)
+      - traefik.http.routers.auth.rule=Host(`auth.${DOMAIN}`)
       - traefik.http.routers.auth.entrypoints=web
 
   auth_conf:

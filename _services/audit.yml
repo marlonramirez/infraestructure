@@ -4,17 +4,12 @@ services:
     build:
       context: ../audit
     volumes:
-      - type: volume
-        source: keys
-        volume:
-          subpath: pub
-        target: /keys
-        read_only: true
+      - pub_key:/keys:ro
     env_file: ../audit/.env.example
     restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.audit.rule=Host(`audit.localhost`)
+      - traefik.http.routers.audit.rule=Host(`audit.${DOMAIN}`)
       - traefik.http.routers.audit.entrypoints=web
 
   audit_conf:
