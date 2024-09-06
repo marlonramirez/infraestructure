@@ -1,35 +1,22 @@
 include:
+  - _services/proxy.yml
+  - _services/mq.yml
   - _services/database.yml
   - _services/auth.yml
   - _services/pqrs.yml
   - _services/pgaudit.yml
   - _services/audit.yml
-  - _services/webapp.yml
   - _services/bi.yml
   - _services/tools.yml
 services:
-  mq:
-    container_name: srv-mq
-    image: rabbitmq:3.13.6-management-alpine
-    ports:
-      - 8072:15672
-    environment:
-      - RABBITMQ_DEFAULT_USER=sespesoft
-      - RABBITMQ_DEFAULT_PASS=Qazwsx*
-
-  traefik:
-    image: traefik:v3.0
-    container_name: tool-traefik
-    command:
-      - --api.insecure=true
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --entryPoints.web.address=:80
-    ports:
-      - 80:80
-      - 8080:8080
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+  webapp:
+    container_name: srv-webapp
+    build:
+      context: ./webapp
+      additional_contexts:
+        - assets=./_assets
     restart: always
-volumes:
-  pub_key:
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.webapp.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.webapp.entrypoints=web

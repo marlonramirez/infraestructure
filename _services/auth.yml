@@ -5,6 +5,7 @@ services:
       context: ../auth
     volumes:
       - pub_key:/rsa/pub
+      - priv_key:/rsa/priv
     env_file: .env
     restart: always
     labels:
@@ -22,3 +23,6 @@ services:
     env_file: .env
     entrypoint: [php, app/ice, dbup, "--schema={perfiles,[!tests]*}"]
     restart: on-failure
+volumes:
+  pub_key:
+  priv_key:

@@ -20,5 +20,5 @@ services:
       db:
         condition: service_healthy
     env_file: ../audit/.env.example
-    entrypoint: [bash, database/migrate.sh]
+    entrypoint: [./database/migrate.sh]
     restart: on-failure
