@@ -21,7 +21,7 @@ services:
       db:
         condition: service_healthy
     env_file: .env
-    entrypoint: [php, app/ice, dbup, "--schema={perfiles,[!tests]*}"]
+    entrypoint: [php, app/ice, dbup, "--schema={perfiles,[!t]*}"]
     restart: on-failure
 volumes:
   pub_key:

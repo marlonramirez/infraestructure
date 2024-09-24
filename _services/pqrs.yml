@@ -20,5 +20,5 @@ services:
       db:
         condition: service_healthy
     env_file: .env
-    entrypoint: [php, app/ice, dbup, "--schema=[!tests]*"]
+    entrypoint: [php, app/ice, dbup, "--schema=[!t]*"]
     restart: on-failure
