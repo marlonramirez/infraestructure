@@ -1,0 +1,24 @@
+services:
+  hiring:
+    container_name: srv-hiring
+    build:
+      context: ../hiring
+    volumes:
+      - pub_key:/rsa/pub:ro
+    env_file: .env
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hiring.rule=Host(`hiring.${DOMAIN}`)
+      - traefik.http.routers.hiring.entrypoints=web
+
+  hiring_conf:
+    container_name: conf-hiring
+    build:
+      context: ../hiring
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    entrypoint: [php, app/ice, dbup, "--schema=[!t]*"]
+    restart: on-failure

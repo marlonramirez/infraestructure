@@ -15,6 +15,10 @@ git clone git@github.com:sespesoft/pgaudit-api.git
 ```
 
 ```
+git clone git@github.com:sespesoft/hiring.git
+```
+
+```
 git clone git@github.com:sespesoft/webapp.git -b auth
 ```
 

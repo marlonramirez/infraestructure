@@ -4,6 +4,7 @@ include:
   - _services/database.yml
   - _services/auth.yml
   - _services/pqrs.yml
+  - _services/hiring.yml
   - _services/pgaudit.yml
   - _services/audit.yml
   - _services/bi.yml
