@@ -6,6 +6,7 @@ include:
   - _services/pqrs.yml
   - _services/hiring.yml
   - _services/pgaudit.yml
+  - _services/geo.yml
   - _services/audit.yml
   - _services/bi.yml
   - _services/tools.yml
