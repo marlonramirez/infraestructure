@@ -6,7 +6,25 @@ services:
     volumes:
       - pub_key:/rsa/pub
       - priv_key:/rsa/priv
-    env_file: .env
+    environment:
+      - APP_URL=${DOMAIN}
+      - DB_HOST=${DB_HOST}
+      - DB_DATABASE=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - PATH_PRIVATEKEY=${PRIV_KEY}
+      - PATH_PUBLICKEY=${PUB_KEY}
+      - SMTP_HOST=${MAIL_HOST}
+      - SMTP_PORT=${MAIL_PORT}
+      - SMTP_AUTH=true
+      - SMTP_USER=${MAIL_USER}
+      - SMTP_PASSWORD=${MAIL_PASSWORD}
+      - AWS_BUCKET=${AWS_BUCKET}
+      - AWS_DEFAULT_REGION=${AWS_REGION}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET}
+      - AWS_ACCESS_KEY_ID=${AWS_KEY}
+      - RECAPTCHA_PULICKEY=${RECAPTCHA_PUB}
+      - RECAPTCHA_PRIVATEKEY=${RECAPTCHA_PRIV}
     restart: always
     labels:
       - traefik.enable=true
@@ -20,8 +38,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    env_file: .env
-    entrypoint: [php, app/ice, dbup, "--schema={perfiles,[!t]*}"]
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_DATABASE=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - PATH_PUBLICKEY=${PUB_KEY}
+    entrypoint: [app/ice, dbup, "--schema={perfiles,[!t]*}"]
     restart: on-failure
 volumes:
   pub_key:

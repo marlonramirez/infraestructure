@@ -5,7 +5,16 @@ services:
       context: ../hiring
     volumes:
       - pub_key:/rsa/pub:ro
-    env_file: .env
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_DATABASE=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - PATH_PUBLICKEY=${PUB_KEY}
+      - AWS_BUCKET=${AWS_BUCKET}
+      - AWS_DEFAULT_REGION=${AWS_REGION}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET}
+      - AWS_ACCESS_KEY_ID=${AWS_KEY}
     restart: always
     labels:
       - traefik.enable=true
@@ -19,6 +28,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    env_file: .env
-    entrypoint: [php, app/ice, dbup, "--schema=[!t]*"]
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_DATABASE=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - PATH_PUBLICKEY=${PUB_KEY}
+    entrypoint: [app/ice, dbup, "--schema={perfiles,[!t]*}"]
     restart: on-failure

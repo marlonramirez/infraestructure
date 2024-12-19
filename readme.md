@@ -23,10 +23,10 @@ git clone git@github.com:sespesoft/webapp.git -b auth
 ```
 
 ```
-git clone git@github.com:sespesoft/audit.git -b authentication-service
+git clone git@github.com:sespesoft/audit.git -b dev
 ```
 
-rename files `example.dev` to `env`.
+copy and rename file `example.dev` to `.env`.
 
 * execute
 

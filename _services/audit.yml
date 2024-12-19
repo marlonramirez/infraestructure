@@ -5,7 +5,40 @@ services:
       context: ../audit
     volumes:
       - pub_key:/keys:ro
-    env_file: ../audit/.env.example
+    environment:
+      - APP_NAME=${APP_NAME}
+      - APP_ENV=production
+      - APP_KEY=base64:oriD7ArC+WCHI5dF+x+t8DR6UTmdjC8cv376Yn7XW+k=
+      - JWT_SECRET=QoYtsdMSoIMLQ1drwQW4f1Sx5wqkVgmLAwcPDPd2NNdYb1IUe0ayQjo97wZJqtOy
+      - APP_URL=audit.${DOMAIN}
+      - FRONTEND_URL=${DOMAIN}
+      - DB_CONNECTION=pgsql
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_NAME}
+      - DB_USERNAME=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - BROADCAST_DRIVER=log
+      - CACHE_DRIVER=file
+      - QUEUE_CONNECTION=sync
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PORT=465
+      - MAIL_USERNAME=${MAIL_USER}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_ENCRYPTION=ssl
+      - MAIL_FROM_ADDRESS=${MAIL_USER}
+      - MAIL_FROM_NAME=${APP_NAME}
+      - AWS_ACCESS_KEY_ID=${AWS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET}
+      - AWS_DEFAULT_REGION=${AWS_REGION}
+      - AWS_BUCKET=${AWS_BUCKET}
+      - UPLOAD_DOCUMENT=s3
+      - FILE_PUBKEY=/keys/key.pem
+      - BI_HOST=${BI_HOST}
+      - BI_USER=${BI_USER}
+      - BI_PASSWORD=${BI_PASSWORD}
+      - BI_FOLDER=${BI_FOLDER}
     restart: always
     labels:
       - traefik.enable=true
@@ -19,6 +52,17 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    env_file: ../audit/.env.example
+    environment:
+      - APP_NAME=${APP_NAME}
+      - APP_ENV=local
+      - APP_KEY=base64:oriD7ArC+WCHI5dF+x+t8DR6UTmdjC8cv376Yn7XW+k=
+      - JWT_SECRET=QoYtsdMSoIMLQ1drwQW4f1Sx5wqkVgmLAwcPDPd2NNdYb1IUe0ayQjo97wZJqtOy
+      - APP_URL=audit.${DOMAIN}
+      - DB_CONNECTION=pgsql
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_NAME}
+      - DB_USERNAME=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
     entrypoint: [./database/migrate.sh]
     restart: on-failure
