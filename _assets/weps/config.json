@@ -1,0 +1,7 @@
+{
+    "audit": "http://audit.weps.sespesoft.com/api/auth/",
+    "auth": "http://auth.weps.sespesoft.com/",
+    "pqr": "http://pqrs.weps.sespesoft.com/",
+    "hiring": "http://hiring.weps.sespesoft.com/",
+    "pgaudit": "http://pgaudit.weps.sespesoft.com/"
+}
