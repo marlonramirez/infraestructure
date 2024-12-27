@@ -5,6 +5,7 @@ services:
       context: ../hiring
     volumes:
       - pub_key:/rsa/pub:ro
+      - ./logs:/app/app/storage/logs
     environment:
       - DB_HOST=${DB_HOST}
       - DB_DATABASE=${DB_NAME}
@@ -34,5 +35,5 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - PATH_PUBLICKEY=${PUB_KEY}
-    entrypoint: [php, app/ice, dbup, "--schema={perfiles,[!t]*}"]
+    entrypoint: [php, app/ice, dbup, "--schema=[!t]*"]
     restart: on-failure

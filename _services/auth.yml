@@ -6,8 +6,9 @@ services:
     volumes:
       - pub_key:/rsa/pub
       - priv_key:/rsa/priv
+      - ./logs:/app/app/storage/logs
     environment:
-      - APP_URL=${DOMAIN}
+      - APP_URL=http://${DOMAIN}
       - DB_HOST=${DB_HOST}
       - DB_DATABASE=${DB_NAME}
       - DB_USER=${DB_USER}

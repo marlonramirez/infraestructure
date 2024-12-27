@@ -6,4 +6,5 @@ pgaudit-api
 webapp
 geo
 _services/storage
-**/.env
+_services/logs
+.env
