@@ -4,6 +4,7 @@ services:
     image: dpage/pgadmin4
     ports:
       - 8084:80
+    user: ${UID}:${GID}
     volumes:
       - ./storage:/var/lib/pgadmin/storage
     environment:
