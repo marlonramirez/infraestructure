@@ -7,6 +7,8 @@ services:
       - pub_key:/rsa/pub:ro
       - ./logs:/app/app/storage/logs
     environment:
+      - APP_URL=${PROTOCOL}://${DOMAIN}
+      - APP_NAME=${APP_NAME}
       - DB_HOST=${DB_HOST}
       - DB_DATABASE=${DB_NAME}
       - DB_USER=${DB_USER}
