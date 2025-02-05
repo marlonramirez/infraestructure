@@ -3,5 +3,6 @@
     "auth": "http://auth.localhost/",
     "pqr": "http://pqrs.localhost/",
     "hiring": "http://hiring.localhost/",
-    "pgaudit": "http://pgaudit.localhost/"
+    "pgaudit": "http://pgaudit.localhost/",
+    "siteKey": ""
 }
