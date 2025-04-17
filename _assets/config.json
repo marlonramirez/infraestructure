@@ -4,5 +4,6 @@
     "pqr": "http://pqrs.localhost/",
     "hiring": "http://hiring.localhost/",
     "pgaudit": "http://pgaudit.localhost/",
+    "geo": "http://geo.localhost/",
     "siteKey": ""
 }
