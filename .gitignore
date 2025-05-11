@@ -5,7 +5,8 @@ hiring
 pgaudit-api
 webapp
 geo
-_services/storage
-_services/logs
-_services/letsencrypt
+_services/application/storage
+_services/application/n8n
+_services/infraestructure/letsencrypt
+_services/domain/logs
 .env

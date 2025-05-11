@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: srv-db
+    container_name: infra-db
     image: postgres:14.1-alpine
     volumes:
       - pg_data:/var/lib/postgresql/data

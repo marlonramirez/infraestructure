@@ -1,15 +1,17 @@
 include:
-  - _services/proxy.yml
-  - _services/mq.yml
-  - _services/database.yml
-  - _services/auth.yml
-  - _services/pqrs.yml
-  - _services/hiring.yml
-  - _services/pgaudit.yml
-  - _services/geo.yml
-  - _services/audit.yml
-  - _services/bi.yml
-  - _services/tools.yml
+  - _services/infraestructure/traefik.yml
+  - _services/infraestructure/database.yml
+  - _services/infraestructure/rabbitmq.yml
+  - _services/infraestructure/minio.yml
+  - _services/application/jasper.yml
+  - _services/application/pgadmin.yml
+  - _services/application/n8n.yml
+  - _services/domain/auth.yml
+  - _services/domain/pqrs.yml
+  - _services/domain/hiring.yml
+  - _services/domain/pgaudit.yml
+  - _services//domain/geo.yml
+  - _services/domain/audit.yml
 services:
   webapp:
     container_name: srv-webapp

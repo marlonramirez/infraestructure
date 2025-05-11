@@ -1,6 +1,6 @@
 services:
   pgadmin:
-    container_name: tool-pgadmin
+    container_name: app-pgadmin
     image: dpage/pgadmin4
     ports:
       - 8084:80

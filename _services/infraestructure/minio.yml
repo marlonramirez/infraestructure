@@ -1,0 +1,37 @@
+services:
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z-cpuv1
+    container_name: infra-minio
+    ports:
+      - 127.0.0.1:9001:9001
+    environment:
+      MINIO_ROOT_USER: ${AWS_KEY}
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET}
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+  minio_conf:
+    image: minio/mc
+    container_name: conf-minio
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MC_HOST_myminio: http://${AWS_KEY}:${AWS_SECRET}@minio:9000
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      /usr/bin/mc alias set dockerminio http://minio:9000 ${AWS_KEY} ${AWS_SECRET};
+      /usr/bin/mc mb dockerminio/${AWS_BUCKET};
+      exit 0;
+      "
+    restart: on-failure
+volumes:
+  minio_data:

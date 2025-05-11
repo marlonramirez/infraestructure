@@ -1,6 +1,6 @@
 services:
-  db_bi:
-    container_name: srv-bi-db
+  jasper_db:
+    container_name: infra-jasper-db
     image: postgres:14.1-alpine
     volumes:
       - pg_jasper_data:/var/lib/postgresql/data
