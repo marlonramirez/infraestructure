@@ -2,7 +2,7 @@ services:
   auth:
     container_name: srv-auth
     build:
-      context: ../auth
+      context: ../../auth
     volumes:
       - pub_key:/rsa/pub
       - priv_key:/rsa/priv
@@ -36,7 +36,7 @@ services:
   auth_conf:
     container_name: conf-auth
     build:
-      context: ../auth
+      context: ../../auth
     depends_on:
       db:
         condition: service_healthy
@@ -46,7 +46,13 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - PATH_PUBLICKEY=${PUB_KEY}
-    entrypoint: [php, app/ice, dbup, "--schema={perfiles,[!t]*}"]
+    
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        set -e
+        php app/ice dbup --schema={perfiles,[!t]*}
     restart: on-failure
 volumes:
   pub_key:

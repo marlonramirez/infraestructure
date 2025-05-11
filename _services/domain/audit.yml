@@ -2,7 +2,7 @@ services:
   audit:
     container_name: srv-audit
     build:
-      context: ../audit
+      context: ../../audit
     volumes:
       - pub_key:/keys:ro
     environment:
@@ -49,7 +49,7 @@ services:
   audit_conf:
     container_name: conf-audit
     build:
-      context: ../audit
+      context: ../../audit
     depends_on:
       db:
         condition: service_healthy
@@ -65,5 +65,5 @@ services:
       - DB_DATABASE=${DB_NAME}
       - DB_USERNAME=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-    entrypoint: [./database/migrate.sh]
+    entrypoint: ./database/migrate.sh
     restart: on-failure

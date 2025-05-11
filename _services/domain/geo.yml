@@ -2,7 +2,7 @@ services:
   geo:
     container_name: srv-geo
     build:
-      context: ../geo
+      context: ../../geo
     volumes:
       - pub_key:/rsa/pub:ro
       - ./logs:/app/app/storage/logs
@@ -21,7 +21,7 @@ services:
   geo_conf:
     container_name: conf-geo
     build:
-      context: ../geo
+      context: ../../geo
     depends_on:
       db:
         condition: service_healthy
@@ -31,5 +31,10 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - PATH_PUBLICKEY=${PUB_KEY}
-    entrypoint: [php, app/ice, dbup, "--schema=[!t]*"]
+    entrypoint: /bin/bash
+    command:
+      - -c 
+      - |
+        set -e
+        php app/ice dbup --schema=[!t]*
     restart: on-failure

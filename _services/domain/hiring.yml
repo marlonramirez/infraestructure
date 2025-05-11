@@ -2,7 +2,7 @@ services:
   hiring:
     container_name: srv-hiring
     build:
-      context: ../hiring
+      context: ../../hiring
     volumes:
       - pub_key:/rsa/pub:ro
       - ./logs:/app/app/storage/logs
@@ -27,7 +27,7 @@ services:
   hiring_conf:
     container_name: conf-hiring
     build:
-      context: ../hiring
+      context: ../../hiring
     depends_on:
       db:
         condition: service_healthy
@@ -37,5 +37,8 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - PATH_PUBLICKEY=${PUB_KEY}
-    entrypoint: [php, app/ice, dbup, "--schema=[!t]*"]
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - php app/ice dbup --schema=[!t]*
     restart: on-failure
