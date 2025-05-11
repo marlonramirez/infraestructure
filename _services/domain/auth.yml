@@ -27,6 +27,10 @@ services:
       - RECAPTCHA_PULICKEY=${RECAPTCHA_PUB}
       - RECAPTCHA_PRIVATEKEY=${RECAPTCHA_PRIV}
       - ENABLE_REGISTER=${ENABLE_REGISTER}
+      - MQ_USER=${MQ_USER}
+      - MQ_PASSWORD=${MQ_PASSWORD}
+      - MQ_HOST=${MQ_HOST}
+      - MQ_PORT=${MQ_PORT}
     restart: always
     labels:
       - traefik.enable=true
