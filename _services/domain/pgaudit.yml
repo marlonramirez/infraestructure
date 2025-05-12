@@ -38,5 +38,5 @@ services:
       - -c
       - |
         set -e
-        php app/ice dbup --schema=[!t]*
+        php app/ice dbup --schema=[!t]* --tag=pgaudit
     restart: on-failure

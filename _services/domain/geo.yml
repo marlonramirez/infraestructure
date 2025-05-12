@@ -35,10 +35,14 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - PATH_PUBLICKEY=${PUB_KEY}
+      - MQ_USER=${MQ_USER}
+      - MQ_PASSWORD=${MQ_PASSWORD}
+      - MQ_HOST=${MQ_HOST}
+      - MQ_PORT=${MQ_PORT}
     entrypoint: /bin/bash
     command:
       - -c 
       - |
         set -e
-        php app/ice dbup --schema=[!t]*
+        php app/ice dbup --schema=[!t]* --tag=geo
     restart: on-failure
